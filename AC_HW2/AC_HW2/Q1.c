@@ -42,9 +42,20 @@ void main()
 	head = addWorker(head, CreateWorker(7868554, "lior", 9000, 1999));
 	head = addWorker(head, CreateWorker(8734574, "sapir", 5500.6, 2004));*/
 
+	int numberOfWorkers = 0;
+
+	while (numberOfWorkers <= 0)
+	{
+		printf("How many workers do you want to add?\n");
+		scanf("%d", &numberOfWorkers);
+	}
+
 	WorkerList* head = addWorker(NULL, CreateWorker());
-	head = addWorker(head, CreateWorker());
-	head = addWorker(head, CreateWorker());
+
+	for (int i = 0; i < numberOfWorkers-1; i++)
+	{
+		head = addWorker(head, CreateWorker());
+	}
 
 	printf("regular workers\n");
 	PrintWorkers(head);
@@ -65,10 +76,10 @@ void main()
 	PrintWorkers(head);
 
 	printf("\nindex\n");
-	printf("%d", index(head, 7868554));
+	printf("%d", index(head, 12345));
 
 	printf("\nindex rec\n");
-	printf("%d", indexRec(head, 2346656, 0));
+	printf("%d", indexRec(head, 12345, 0));
 
 	freeWorkers(head);
 }
