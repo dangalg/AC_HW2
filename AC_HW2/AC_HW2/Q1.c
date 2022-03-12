@@ -39,12 +39,12 @@ void main()
 	head = addWorker(head, CreateWorker(2436127, "neev", 20000, 2021));
 	head = addWorker(head, CreateWorker(2346656, "ben", 5000, 2020));
 	head = addWorker(head, CreateWorker(7868554, "lior", 9000, 1999));
-	head = addWorker(head, CreateWorker(8734574, "sapir", 500.6, 2004));
+	head = addWorker(head, CreateWorker(8734574, "sapir", 5500.6, 2004));
 
 	printf("regular workers");
 	PrintWorkers(head);
 
-	deleteWorstWorker(head);
+	head = deleteWorstWorker(head);
 
 	printf("\ndeleted worker");
 	PrintWorkers(head);
@@ -235,6 +235,7 @@ WorkerList* deleteWorstWorker(WorkerList* head)
 	int index = 0;
 	int lowestSalaryIndex = 0;
 	double minSalary = tmp->data->Salary;
+	lowestSalaryWorker = tmp;
 	while (tmp != NULL)
 	{
 		if (tmp->data->Salary < minSalary)
