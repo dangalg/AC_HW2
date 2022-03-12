@@ -41,22 +41,28 @@ void main()
 	head = addWorker(head, CreateWorker(7868554, "lior", 9000, 1999));
 	head = addWorker(head, CreateWorker(8734574, "sapir", 500.6, 2004));
 
+	printf("regular workers");
 	PrintWorkers(head);
 
 	deleteWorstWorker(head);
 
+	printf("\ndeleted worker");
 	PrintWorkers(head);
 
 	update_worker(head, 15);
 
+	printf("\nupdated workers");
 	PrintWorkers(head);
 
-	reverse(head);
+	head = reverse(head);
 
+	printf("\nreverse workers");
 	PrintWorkers(head);
 
+	printf("\nindex\n");
 	printf("%d", index(head, 7868554));
 
+	printf("\nindex rec\n");
 	printf("%d", indexRec(head, 2346656, 0));
 
 	freeWorkers(head);
@@ -144,9 +150,9 @@ Worker* CreateWorker(long unsigned id, char* name, double salary, unsigned int s
 
 void PrintWorker(Worker* _worker, int _yearType)
 {
-	printf("ID: %d\n", _worker->ID);
-	printf("Name: %s\n", _worker->Name);
-	printf("Salary: %lf\n", _worker->Salary);
+	printf("ID: %d ", _worker->ID);
+	printf("Name: %s ", _worker->Name);
+	printf("Salary: %lf ", _worker->Salary);
 
 	switch (_yearType)
 	{
@@ -254,9 +260,9 @@ WorkerList* deleteWorstWorker(WorkerList* head)
 	{
 		WorkerList* result = lowestSalaryWorker->next;
 		lowestSalaryWorker->next = result->next;
-		free(lowestSalaryWorker->next->data->Name);
-		free(lowestSalaryWorker->next->data);
-		free(lowestSalaryWorker->next);
+		free(result->data->Name);
+		free(result->data);
+		free(result);
 		return head;
 	}
 }
