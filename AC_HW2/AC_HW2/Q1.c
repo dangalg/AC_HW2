@@ -1,6 +1,8 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
+#define HEB_YEAR_LENGTH 6
 
 typedef struct Worker 
 {
@@ -8,7 +10,7 @@ typedef struct Worker
 	char* Name;
 	double Salary;
 	union StartYear{
-		char StartYearHeb[6];
+		char StartYearHeb[HEB_YEAR_LENGTH];
 		unsigned int StartYearReg;
 	};
 } Worker;
@@ -19,13 +21,31 @@ typedef struct WorkerList
 	struct WorkerList* next;
 } WorkerList;
 
+Worker* CreateWorker(long unsigned id, char* name, double salary, char startYearHeb[], unsigned int StartYearReg);
 Worker* CreateWorker();
 void PrintWorker(Worker* _worker, int _yearType);
 WorkerList* addWorker(WorkerList* head, Worker* w);
+int index(WorkerList* head, long unsigned id);
+int indexRec(WorkerList* head, long unsigned id);
+WorkerList* deleteWorstWorker(WorkerList* head);
+void update_worker(WorkerList* head, float percent);
+
 
 void main()
 {
-	Worker* worker = CreateWorker();
+	//Worker* worker = CreateWorker();
+}
+
+Worker* CreateWorker(long unsigned id, char* name, double salary, char startYearHeb[], unsigned int startYearReg)
+{
+	Worker* worker = (Worker*)malloc(sizeof(Worker));
+	worker->ID = id;
+	strcpy(worker->Name, name);
+	worker->Salary = salary;
+	strcpy(worker->StartYearHeb, startYearHeb);
+	worker->StartYearReg = startYearReg;
+
+	return worker;
 }
 
 Worker* CreateWorker()
@@ -75,7 +95,7 @@ Worker* CreateWorker()
 	case 0:
 		printf("Enter Worker Hebrew Start Year: ");
 		fseek(stdin, 0, SEEK_END);
-		scanf("%s", &worker->StartYearHeb);
+		scanf("%s", worker->StartYearHeb);
 		break;
 	case 1:
 		printf("Enter Worker Regular Start Year: ");
@@ -105,6 +125,92 @@ void PrintWorker(Worker* _worker, int _yearType)
 
 WorkerList* addWorker(WorkerList* head, Worker* w)
 {
-
+	WorkerList* wl = (WorkerList*)malloc(sizeof(WorkerList));
+	if (!(wl)) { printf("Allocation Error!"); exit(1); }
+	wl->data = w;
+	wl->next = head;
+	return wl;
 }
+
+int index(WorkerList* head, long unsigned id)
+{
+	WorkerList* tmp;
+	tmp = head;
+	int index = 0;
+	while (tmp != NULL)
+	{
+		if (tmp->data->ID == id)
+		{
+			return index;
+		}
+		index++;
+		tmp = tmp->next;
+	}
+
+	return -1;
+}
+
+int indexRec(WorkerList* head, long unsigned id, int index)
+{
+	if (head == NULL) { return -1; }
+	if (head->data->ID == id) {
+		return index;
+	}
+	indexRec(head->next, id, index + 1);
+}
+
+WorkerList* deleteWorstWorker(WorkerList* head)
+{
+	WorkerList* tmp;
+	WorkerList* beforelowestSalaryWorker = NULL;
+	WorkerList* lowestSalaryWorker = NULL;
+	tmp = head;
+	int index = 0;
+	int lowestSalaryIndex = 0;
+	double minSalary = tmp->data->Salary;
+	while (tmp != NULL)
+	{
+		if (tmp->data->Salary < minSalary)
+		{
+			minSalary = tmp->data->Salary;
+			lowestSalaryIndex = index;
+			lowestSalaryWorker = beforelowestSalaryWorker;
+		}
+		beforelowestSalaryWorker = tmp;
+		index++;
+		tmp = tmp->next;
+	}
+
+	if (lowestSalaryIndex == 0)
+	{
+		WorkerList* result = lowestSalaryWorker->next;
+		free(lowestSalaryWorker->data->Name);
+		free(lowestSalaryWorker->data);
+		free(lowestSalaryWorker);
+		return result;
+	}
+	else 
+	{
+		WorkerList* result = lowestSalaryWorker->next;
+		lowestSalaryWorker->next = result->next;
+		free(lowestSalaryWorker->next->data->Name);
+		free(lowestSalaryWorker->next->data);
+		free(lowestSalaryWorker->next);
+		return head;
+	}
+}
+
+void update_worker(WorkerList* head, float percent)
+{
+	WorkerList* tmp;
+	tmp = head;
+	while (tmp != NULL)
+	{
+		tmp->data->Salary = tmp->data->Salary + tmp->data->Salary * (percent/100);
+		tmp = tmp->next;
+	}
+}
+
+
+
 
