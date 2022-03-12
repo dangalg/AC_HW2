@@ -21,6 +21,7 @@ typedef struct WorkerList
 
 Worker* CreateWorker();
 void PrintWorker(Worker* _worker, int _yearType);
+WorkerList* addWorker(WorkerList* head, Worker* w);
 
 void main()
 {
@@ -32,15 +33,22 @@ Worker* CreateWorker()
 	Worker* worker = (Worker*)malloc(sizeof(Worker));
 	if (!worker) { printf("Allocation Error!"); exit(1); }
 
-	printf("Enter Worker ID: ");
-	scanf("%d", &worker->ID);
+	while (worker->ID <= 0)
+	{
+		printf("Enter Worker ID: ");
+		scanf("%d", &worker->ID);
+	}
 
-	printf("Enter Worker Name: ");
-	char workerName[20];
-	fseek(stdin, 0, SEEK_END);
-	scanf("%s", workerName);
+	char workerName[21];
+	while (strlen(workerName) <= 0 && strlen(workerName) > 20)
+	{
+		printf("Enter Worker Name (20 char max): ");
+		fseek(stdin, 0, SEEK_END);
+		scanf("%s", workerName);
+	}
 	worker->Name = (char*)malloc(strlen(workerName) * sizeof(char));
 	if (!(worker->Name)) { printf("Allocation Error!"); exit(1); }
+	strcpy(worker->Name, workerName);
 
 	printf("Enter Worker Salary: ");
 	scanf("%d", &worker->Salary);
@@ -93,5 +101,10 @@ void PrintWorker(Worker* _worker, int _yearType)
 		printf("Regular Year: %d\n", _worker->StartYearReg);
 		break;
 	}
+}
+
+WorkerList* addWorker(WorkerList* head, Worker* w)
+{
+
 }
 
