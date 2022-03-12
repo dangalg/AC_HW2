@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 #define HEB_YEAR_LENGTH 6
+#define NAME_SIZE 21
 
 typedef struct Worker 
 {
@@ -21,12 +22,12 @@ typedef struct WorkerList
 	struct WorkerList* next;
 } WorkerList;
 
-Worker* CreateWorker(long unsigned id, char* name, double salary, unsigned int StartYearReg);
-//Worker* CreateWorker();
+//Worker* CreateWorker(long unsigned id, char* name, double salary, unsigned int StartYearReg);
+Worker* CreateWorker();
 void PrintWorker(Worker* _worker, int _yearType);
 WorkerList* addWorker(WorkerList* head, Worker* w);
 int index(WorkerList* head, long unsigned id);
-int indexRec(WorkerList* head, long unsigned id);
+int indexRec(WorkerList* head, long unsigned id, int index);
 WorkerList* deleteWorstWorker(WorkerList* head);
 void update_worker(WorkerList* head, float percent);
 WorkerList* reverse(WorkerList* head);
@@ -35,28 +36,32 @@ void PrintWorkers(WorkerList* head);
 
 void main()
 {
-	WorkerList* head = addWorker(NULL, CreateWorker(12345, "dan", 3000.0, 2022));
+	/*WorkerList* head = addWorker(NULL, CreateWorker(12345, "dan", 3000.0, 2022));
 	head = addWorker(head, CreateWorker(2436127, "neev", 20000, 2021));
 	head = addWorker(head, CreateWorker(2346656, "ben", 5000, 2020));
 	head = addWorker(head, CreateWorker(7868554, "lior", 9000, 1999));
-	head = addWorker(head, CreateWorker(8734574, "sapir", 5500.6, 2004));
+	head = addWorker(head, CreateWorker(8734574, "sapir", 5500.6, 2004));*/
 
-	printf("regular workers");
+	WorkerList* head = addWorker(NULL, CreateWorker());
+	head = addWorker(head, CreateWorker());
+	head = addWorker(head, CreateWorker());
+
+	printf("regular workers\n");
 	PrintWorkers(head);
 
 	head = deleteWorstWorker(head);
 
-	printf("\ndeleted worker");
+	printf("\ndeleted worker\n");
 	PrintWorkers(head);
 
 	update_worker(head, 15);
 
-	printf("\nupdated workers");
+	printf("\nupdated workers\n");
 	PrintWorkers(head);
 
 	head = reverse(head);
 
-	printf("\nreverse workers");
+	printf("\nreverse workers\n");
 	PrintWorkers(head);
 
 	printf("\nindex\n");
@@ -78,81 +83,82 @@ void PrintWorkers(WorkerList* head)
 	}
 }
 
-Worker* CreateWorker(long unsigned id, char* name, double salary, unsigned int startYearReg)
-{
-	Worker* worker = (Worker*)malloc(sizeof(Worker));
-	worker->ID = id;
-	worker->Name = (char*)malloc((strlen(name)+1) * sizeof(char));
-	strcpy(worker->Name, name);
-	worker->Salary = salary;
-	worker->StartYearReg = startYearReg;
-
-	return worker;
-}
-
-//Worker* CreateWorker()
+//Worker* CreateWorker(long unsigned id, char* name, double salary, unsigned int startYearReg)
 //{
 //	Worker* worker = (Worker*)malloc(sizeof(Worker));
-//	if (!worker) { printf("Allocation Error!"); exit(1); }
+//	worker->ID = id;
+//	worker->Name = (char*)malloc((strlen(name)+1) * sizeof(char));
+//	strcpy(worker->Name, name);
+//	worker->Salary = salary;
+//	worker->StartYearReg = startYearReg;
 //
-//	while (worker->ID <= 0)
-//	{
-//		printf("Enter Worker ID: ");
-//		scanf("%d", &worker->ID);
-//	}
-//
-//	char workerName[21];
-//	while (strlen(workerName) <= 0 && strlen(workerName) > 20)
-//	{
-//		printf("Enter Worker Name (20 char max): ");
-//		fseek(stdin, 0, SEEK_END);
-//		scanf("%s", workerName);
-//	}
-//	worker->Name = (char*)malloc((strlen(workerName)+1) * sizeof(char));
-//	if (!(worker->Name)) { printf("Allocation Error!"); exit(1); }
-//	strcpy(worker->Name, workerName);
-//
-//	printf("Enter Worker Salary: ");
-//	scanf("%d", &worker->Salary);
-//
-//	if (worker->Salary < 0)
-//	{
-//		worker->Salary *= -1;
-//	}
-//
-//	int yearType = -1;
-//	while (yearType == 0 || yearType == 1)
-//	{
-//		printf("Please select 0 for Hebrew Year, 1 for regular year: ");
-//		scanf("%d", &yearType);
-//
-//		if (yearType != 0 && yearType != 1)
-//		{
-//			printf("Please select only 0 or 1!\n");
-//		}
-//	}
-//
-//	switch (yearType)
-//	{
-//	case 0:
-//		printf("Enter Worker Hebrew Start Year: ");
-//		fseek(stdin, 0, SEEK_END);
-//		scanf("%s", worker->StartYearHeb);
-//		break;
-//	case 1:
-//		printf("Enter Worker Regular Start Year: ");
-//		scanf("%d", &worker->StartYearReg);
-//		break;
-//	}
-//	
 //	return worker;
 //}
+
+Worker* CreateWorker()
+{
+	Worker* worker = (Worker*)malloc(sizeof(Worker));
+	if (!worker) { printf("Allocation Error!"); exit(1); }
+
+	worker->ID = 0;
+	while (worker->ID <= 0)
+	{
+		printf("Enter Worker ID: ");
+		scanf("%d", &worker->ID);
+	}
+
+	char workerName[NAME_SIZE] = "\0";
+	while (strlen(workerName) <= 0 || strlen(workerName) > NAME_SIZE - 1)
+	{
+		printf("Enter Worker Name (%d char max): ", NAME_SIZE - 1);
+		fseek(stdin, 0, SEEK_END);
+		scanf("%s", workerName);
+	}
+	worker->Name = (char*)malloc((strlen(workerName)+1) * sizeof(char));
+	if (!(worker->Name)) { printf("Allocation Error!"); exit(1); }
+	strcpy(worker->Name, workerName);
+
+	printf("Enter Worker Salary: ");
+	scanf("%lf", &worker->Salary);
+
+	if (worker->Salary < 0)
+	{
+		worker->Salary *= -1;
+	}
+
+	int yearType = -1;
+	while (yearType < 0 || yearType > 1)
+	{
+		printf("Please select 0 for Hebrew Year, 1 for regular year: ");
+		scanf("%d", &yearType);
+
+		if (yearType < 0 || yearType > 1)
+		{
+			printf("Please select only 0 or 1!\n");
+		}
+	}
+
+	switch (yearType)
+	{
+	case 0:
+		printf("Enter Worker Hebrew Start Year: ");
+		fseek(stdin, 0, SEEK_END);
+		scanf("%s", worker->StartYearHeb);
+		break;
+	case 1:
+		printf("Enter Worker Regular Start Year: ");
+		scanf("%d", &worker->StartYearReg);
+		break;
+	}
+	
+	return worker;
+}
 
 void PrintWorker(Worker* _worker, int _yearType)
 {
 	printf("ID: %d ", _worker->ID);
 	printf("Name: %s ", _worker->Name);
-	printf("Salary: %lf ", _worker->Salary);
+	printf("Salary: %.2lf ", _worker->Salary);
 
 	switch (_yearType)
 	{
@@ -174,6 +180,7 @@ WorkerList* addWorker(WorkerList* head, Worker* w)
 		{
 			head->data = w;
 			head->next = NULL;
+			return head;
 		}
 		else 
 		{
@@ -184,19 +191,39 @@ WorkerList* addWorker(WorkerList* head, Worker* w)
 	{
 		WorkerList* tmp = head;
 		WorkerList* lastWorker = NULL;
-		while (tmp != NULL)
-		{
-			lastWorker = tmp;
-			tmp = tmp->next;
-		}
 		WorkerList* wl = (WorkerList*)malloc(sizeof(WorkerList));
 		if (!(wl)) { printf("Allocation Error!"); exit(1); }
 		wl->data = w;
-		wl->next = NULL;
-		lastWorker->next = wl;
-	}
 
-	return head;
+		if (w->Salary <= tmp->data->Salary)
+		{
+			wl->next = head;
+			return wl;
+		}
+		else
+		{
+			lastWorker = tmp;
+			tmp = tmp->next;
+			int foundPlaceToInsert = 0;
+			while (tmp != NULL && foundPlaceToInsert == 0)
+			{
+				if (w->Salary <= tmp->data->Salary)
+				{
+					foundPlaceToInsert = 1;
+				}
+				else
+				{
+					lastWorker = tmp;
+					tmp = tmp->next;
+				}
+			}
+			wl->data = w;
+			wl->next = lastWorker->next;
+			lastWorker->next = wl;
+
+			return head;
+		}
+	}
 }
 
 int index(WorkerList* head, long unsigned id)
