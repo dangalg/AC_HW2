@@ -88,7 +88,7 @@ void main()
 	PrintWorkers(head);
 
 	// get index for specific id
-	int workerIndex = 345678;
+	int workerIndex = 234567;
 	printf("\nindex for %d\n", workerIndex);
 	printf("%d", index(head, workerIndex));
 
