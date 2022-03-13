@@ -290,18 +290,14 @@ WorkerList* deleteWorstWorker(WorkerList* head)
 	if (lowestSalaryIndex == 0)
 	{
 		WorkerList* result = lowestSalaryWorker->next;
-		free(lowestSalaryWorker->data->Name);
-		free(lowestSalaryWorker->data);
-		free(lowestSalaryWorker);
+		freeWorker(lowestSalaryWorker);
 		return result;
 	}
 	else 
 	{
 		WorkerList* result = lowestSalaryWorker->next;
 		lowestSalaryWorker->next = result->next;
-		free(result->data->Name);
-		free(result->data);
-		free(result);
+		freeWorker(result);
 		return head;
 	}
 }
@@ -344,10 +340,15 @@ void freeWorkers(WorkerList* head)
 	{
 		releaseWorker = tmp;
 		tmp = tmp->next;
-		free(releaseWorker->data->Name);
-		free(releaseWorker->data);
-		free(releaseWorker);
+		freeWorker(releaseWorker);
 	}
+}
+
+void freeWorker(WorkerList* wl)
+{
+	free(wl->data->Name);
+	free(wl->data);
+	free(wl);
 }
 
 
