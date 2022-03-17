@@ -9,7 +9,7 @@
 // structs
 typedef struct Worker 
 {
-	long unsigned ID;
+	long long unsigned ID;
 	char* Name;
 	double Salary;
 	union StartYear{
@@ -170,7 +170,7 @@ Worker* CreateWorkerFromUser()
 	while (worker->ID <= 0)
 	{
 		printf("Enter Worker ID: ");
-		scanf("%d", &worker->ID);
+		scanf("%llu", &worker->ID);
 	}
 
 	char workerName[NAME_SIZE] = "\0";
@@ -228,7 +228,7 @@ Worker* CreateWorkerFromUser()
 /// <param name="_worker">Worker to print</param>
 void PrintWorker(Worker* _worker)
 {
-	printf("ID: %d ", _worker->ID);
+	printf("ID: %llu ", _worker->ID);
 	printf("Name: %s ", _worker->Name);
 	printf("Salary: %.2lf ", _worker->Salary);
 
